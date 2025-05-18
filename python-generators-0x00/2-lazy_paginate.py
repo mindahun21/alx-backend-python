@@ -16,9 +16,9 @@ def paginate_users(page_size, offset):
         for row in rows
     ]
 
-def lazy_pagination(page_size):
+def lazypaginate(page_size):
     """
-    Generator that yields pages of user data lazily using pagination.
+    Generator that lazily yields paginated user data.
     """
     offset = 0
     while True:
