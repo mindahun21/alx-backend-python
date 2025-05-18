@@ -1,25 +1,16 @@
-from seed import connect_to_prodev
+import psycopg2
+seed = __import__('seed')
 
 def paginate_users(page_size, offset):
-    connection = connect_to_prodev()
-    cursor = connection.cursor()
-    cursor.execute("SELECT user_id, name, email, age FROM user_data LIMIT %s OFFSET %s", (page_size, offset))
+    connection = seed.connect_to_prodev()
+    cursor = connection.cursor(dictionary=True)
+    cursor.execute(f"SELECT * FROM user_data LIMIT {page_size} OFFSET {offset}")
     rows = cursor.fetchall()
     connection.close()
-    return [
-        {
-            "user_id": str(row[0]),
-            "name": row[1],
-            "email": row[2],
-            "age": int(row[3])
-        }
-        for row in rows
-    ]
+    return rows
+    
 
-def lazypaginate(page_size):
-    """
-    Generator that lazily yields paginated user data.
-    """
+def lazy_pagination(page_size):
     offset = 0
     while True:
         page = paginate_users(page_size, offset)
